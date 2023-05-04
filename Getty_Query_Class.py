@@ -1,10 +1,17 @@
 from dataclasses import dataclass
 import requests
 import xml.etree.cElementTree as ET
-from bs4 import BeautifulSoup
 from pathlib import Path
-from rdflib import Graph
-from rdflib import URIRef
+from rdflib import Graph, URIRef
+
+__author__ = "Andrea Siotto"
+__copyright__ = "MIT License"
+__credits__ = ["Andrea Siotto"]
+__license__ = "Undecided"
+__version__ = "1.0"
+__maintainer__ = "Andrea Siotto"
+__email__ = "siotto.andrea@gmail.com"
+__status__ = "Development"
 
 
 @dataclass
@@ -103,9 +110,9 @@ class Getty_TGN_Request:
         _placetype_attr = "misr&placetypeid="
         _nation_attr = "&nationid="
 
-        self.queryname = query_name
-        self.querytype = query_placetypeid
-        self.querynation = query_nationid
+        self.queryname = str(query_name)
+        self.querytype = str(query_placetypeid)
+        self.querynation = str(query_nationid)
 
         self._link = (
             f"{_mainlink}%22{query_name}%22"
@@ -114,9 +121,7 @@ class Getty_TGN_Request:
         )
 
         response = requests.get(self._link)
-        self.findings = self._XML_find_subjects(
-            BeautifulSoup(response.text, "html.parser").prettify()
-        )
+        self.findings = self._XML_find_subjects(response.text)
 
         if save_to_folder:
             self.save_findings(save_to_folder)
