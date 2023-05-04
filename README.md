@@ -17,6 +17,7 @@ researchers and individuals interested in studying the history and geography of 
 region or place.
 
 With this library a python script can retrieve all the results of a search as .rdf files.
+
   retrieved = Getty_TGN_Request('query', save_to_folder='query_folder')
 
 The Getty_TGN_Request class is used to manage a request for a query to the Getty Thesaurus of Geographic Names (TGN) online database. This class has the following methods and attributes:
