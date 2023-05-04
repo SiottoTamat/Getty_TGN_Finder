@@ -1,0 +1,195 @@
+
+<http://vocab.getty.edu/tgn/8201269> a <http://vocab.getty.edu/ontology#Subject> , <http://www.w3.org/2004/02/skos/core#Concept> , <http://vocab.getty.edu/ontology#AdminPlaceConcept> ;
+	<http://www.w3.org/2000/01/rdf-schema#label> "Baiyashi"@zh-latn-pinyin-x-notone , "Dong'an"@zh-latn , "Tung-an"@zh-latn , "Tung-an-hsien"@zh-latn , "Pai-ya"@zh-latn , "Pai-ya-shih"@zh-latn , "白牙市"@zh ;
+	<http://www.w3.org/2000/01/rdf-schema#seeAlso> <http://www.getty.edu/vow/TGNFullDisplay?find=&place=&nation=&subjectid=8201269> ;
+	<http://purl.org/dc/terms/created> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/terms/issued> "2016-03-01T15:09:39"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/terms/modified> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> , "2016-03-01T15:09:39"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://www.w3.org/2004/02/skos/core#changeNote> <http://vocab.getty.edu/tgn/rev/5023110549> , <http://vocab.getty.edu/tgn/rev/5023110542> , <http://vocab.getty.edu/tgn/rev/5023110543> , <http://vocab.getty.edu/tgn/rev/5023110544> , <http://vocab.getty.edu/tgn/rev/5023110545> , <http://vocab.getty.edu/tgn/rev/5023110546> , <http://vocab.getty.edu/tgn/rev/5023110547> , <http://vocab.getty.edu/tgn/rev/5023110548> , <http://vocab.getty.edu/tgn/rev/5025302356> , <http://vocab.getty.edu/tgn/rev/5025302357> ;
+	<http://vocab.getty.edu/ontology#broader> <http://vocab.getty.edu/tgn/7002079> ;
+	<http://vocab.getty.edu/ontology#broaderPartitiveExtended> <http://vocab.getty.edu/tgn/1000004> , <http://vocab.getty.edu/tgn/7031110> , <http://vocab.getty.edu/tgn/7002079> , <http://vocab.getty.edu/tgn/1000111> , <http://vocab.getty.edu/tgn/7029392> ;
+	<http://vocab.getty.edu/ontology#broaderExtended> <http://vocab.getty.edu/tgn/1000004> , <http://vocab.getty.edu/tgn/7031110> , <http://vocab.getty.edu/tgn/7002079> , <http://vocab.getty.edu/tgn/1000111> , <http://vocab.getty.edu/tgn/7029392> ;
+	<http://vocab.getty.edu/ontology#broaderPreferredExtended> <http://vocab.getty.edu/tgn/1000004> , <http://vocab.getty.edu/tgn/7002079> , <http://vocab.getty.edu/tgn/1000111> , <http://vocab.getty.edu/tgn/7029392> ;
+	<http://vocab.getty.edu/ontology#parentString> "Hunan, China, Asia, World" ;
+	<http://www.w3.org/2004/02/skos/core#note> <http://vocab.getty.edu/tgn/rev/5023110549> , <http://vocab.getty.edu/tgn/rev/5023110542> , <http://vocab.getty.edu/tgn/rev/5023110543> , <http://vocab.getty.edu/tgn/rev/5023110544> , <http://vocab.getty.edu/tgn/rev/5023110545> , <http://vocab.getty.edu/tgn/rev/5023110546> , <http://vocab.getty.edu/tgn/rev/5023110547> , <http://vocab.getty.edu/tgn/rev/5023110548> , <http://vocab.getty.edu/tgn/rev/5025302356> , <http://vocab.getty.edu/tgn/rev/5025302357> ;
+	<http://vocab.getty.edu/ontology#parentStringAbbrev> "Hunan, China, ... World" ;
+	<http://vocab.getty.edu/ontology#displayOrder> "876"^^<http://www.w3.org/2001/XMLSchema#positiveInteger> ;
+	<http://vocab.getty.edu/ontology#placeType> <http://vocab.getty.edu/aat/300008347> ;
+	<http://www.w3.org/2008/05/skos-xl#prefLabel> <http://vocab.getty.edu/tgn/term/1005660042-zh-Latn-pinyin-x-notone> ;
+	<http://www.w3.org/2004/02/skos/core#prefLabel> "Baiyashi"@zh-latn-pinyin-x-notone ;
+	<http://www.w3.org/2008/05/skos-xl#altLabel> <http://vocab.getty.edu/tgn/term/1005660047-zh-Latn> , <http://vocab.getty.edu/tgn/term/1005660046-zh-Latn> , <http://vocab.getty.edu/tgn/term/1005660045-zh-Latn> , <http://vocab.getty.edu/tgn/term/1005660044-zh-Latn> , <http://vocab.getty.edu/tgn/term/1005660043-zh-Latn> , <http://vocab.getty.edu/tgn/term/1005660048-zh> ;
+	<http://www.w3.org/2004/02/skos/core#altLabel> "Dong'an"@zh-latn , "Tung-an"@zh-latn , "Tung-an-hsien"@zh-latn , "Pai-ya"@zh-latn , "Pai-ya-shih"@zh-latn , "白牙市"@zh ;
+	<http://vocab.getty.edu/ontology#broaderPartitive> <http://vocab.getty.edu/tgn/7002079> ;
+	<http://vocab.getty.edu/ontology#broaderPreferred> <http://vocab.getty.edu/tgn/7002079> ;
+	<http://www.w3.org/2004/02/skos/core#broader> <http://vocab.getty.edu/tgn/7002079> ;
+	<http://purl.org/iso25964/skos-thes#broaderPartitive> <http://vocab.getty.edu/tgn/7002079> ;
+	<http://vocab.getty.edu/ontology#prefLabelGVP> <http://vocab.getty.edu/tgn/term/1005660042-zh-Latn-pinyin-x-notone> ;
+	<http://www.w3.org/2004/02/skos/core#inScheme> <http://vocab.getty.edu/tgn/> ;
+	<http://purl.org/dc/terms/contributor> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://purl.org/dc/terms/source> <http://vocab.getty.edu/tgn/source/2009007144-subject-8201269> ;
+	<http://vocab.getty.edu/ontology#placeTypePreferred> <http://vocab.getty.edu/aat/300008347> ;
+	<http://purl.org/dc/elements/1.1/identifier> "8201269" ;
+	<http://www.w3.org/2004/02/skos/core#broaderTransitive> <http://vocab.getty.edu/tgn/1000004> , <http://vocab.getty.edu/tgn/7031110> , <http://vocab.getty.edu/tgn/7002079> , <http://vocab.getty.edu/tgn/1000111> ;
+	<http://creativecommons.org/ns#license> <http://opendatacommons.org/licenses/by/1.0/> ;
+	<http://purl.org/dc/terms/license> <http://opendatacommons.org/licenses/by/1.0/> ;
+	<http://rdfs.org/ns/void#inDataset> <http://vocab.getty.edu/dataset/tgn> ;
+	<http://www.w3.org/ns/prov#wasGeneratedBy> <http://vocab.getty.edu/tgn/rev/5023110549> ;
+	<http://xmlns.com/foaf/0.1/focus> <http://vocab.getty.edu/tgn/8201269-place> .
+
+<http://vocab.getty.edu/tgn/rev/5023110549> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Create> ;
+	<http://purl.org/dc/elements/1.1/type> "created" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/elements/1.1/description> "new:Baiyashi" .
+
+<http://vocab.getty.edu/tgn/rev/5023110542> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Modify> ;
+	<http://purl.org/dc/elements/1.1/type> "term added" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/elements/1.1/description> "Baiyashi (1005660042);" ;
+	<http://www.w3.org/ns/prov#used> <http://vocab.getty.edu/tgn/8201269> .
+
+<http://vocab.getty.edu/tgn/rev/5023110543> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Modify> ;
+	<http://purl.org/dc/elements/1.1/type> "term added" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/elements/1.1/description> "Dong'an (1005660047);" ;
+	<http://www.w3.org/ns/prov#used> <http://vocab.getty.edu/tgn/8201269> .
+
+<http://vocab.getty.edu/tgn/rev/5023110544> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Modify> ;
+	<http://purl.org/dc/elements/1.1/type> "term added" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/elements/1.1/description> "Pai-ya (1005660046);" ;
+	<http://www.w3.org/ns/prov#used> <http://vocab.getty.edu/tgn/8201269> .
+
+<http://vocab.getty.edu/tgn/rev/5023110545> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Modify> ;
+	<http://purl.org/dc/elements/1.1/type> "term added" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/elements/1.1/description> "Pai-ya-shih (1005660045);" ;
+	<http://www.w3.org/ns/prov#used> <http://vocab.getty.edu/tgn/8201269> .
+
+<http://vocab.getty.edu/tgn/rev/5023110546> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Modify> ;
+	<http://purl.org/dc/elements/1.1/type> "term added" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/elements/1.1/description> "Tung-an (1005660044);" ;
+	<http://www.w3.org/ns/prov#used> <http://vocab.getty.edu/tgn/8201269> .
+
+<http://vocab.getty.edu/tgn/rev/5023110547> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Modify> ;
+	<http://purl.org/dc/elements/1.1/type> "term added" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/elements/1.1/description> "Tung-an-hsien (1005660043);" ;
+	<http://www.w3.org/ns/prov#used> <http://vocab.getty.edu/tgn/8201269> .
+
+<http://vocab.getty.edu/tgn/rev/5023110548> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Modify> ;
+	<http://purl.org/dc/elements/1.1/type> "term added" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-02-27T00:22:32"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/elements/1.1/description> "白牙市 (1005660048);" ;
+	<http://www.w3.org/ns/prov#used> <http://vocab.getty.edu/tgn/8201269> .
+
+<http://vocab.getty.edu/tgn/rev/5025302356> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Publish> ;
+	<http://purl.org/dc/elements/1.1/type> "issued" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-03-01T15:09:39"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://www.w3.org/ns/prov#used> <http://vocab.getty.edu/tgn/8201269> .
+
+<http://vocab.getty.edu/tgn/rev/5025302357> a <http://www.w3.org/ns/prov#Activity> , <http://www.w3.org/ns/prov#Modify> ;
+	<http://purl.org/dc/elements/1.1/type> "moved" ;
+	<http://www.w3.org/ns/prov#startedAtTime> "2016-03-01T15:09:39"^^<http://www.w3.org/2001/XMLSchema#dateTime> ;
+	<http://purl.org/dc/elements/1.1/description> "Old Parent: temp.parent/VP Hunan (8073267)" ;
+	<http://www.w3.org/ns/prov#used> <http://vocab.getty.edu/tgn/8201269> .
+
+<http://vocab.getty.edu/tgn/source/2009007144-subject-8201269> a <http://purl.org/ontology/bibo/DocumentPart> ;
+	<http://purl.org/dc/terms/isPartOf> <http://vocab.getty.edu/tgn/source/2009007144> ;
+	<http://purl.org/ontology/bibo/locator> "-1897715" .
+
+<http://vocab.getty.edu/tgn/term/1005660042-zh-Latn-pinyin-x-notone> a <http://www.w3.org/2008/05/skos-xl#Label> ;
+	<http://vocab.getty.edu/ontology#term> "Baiyashi"@zh-latn-pinyin-x-notone ;
+	<http://vocab.getty.edu/ontology#displayOrder> "1"^^<http://www.w3.org/2001/XMLSchema#positiveInteger> ;
+	<http://www.w3.org/2008/05/skos-xl#literalForm> "Baiyashi"@zh-latn-pinyin-x-notone ;
+	<http://vocab.getty.edu/ontology#termFlag> <http://vocab.getty.edu/term/flag/Vernacular> ;
+	<http://vocab.getty.edu/ontology#contributorPreferred> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://purl.org/dc/terms/contributor> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://vocab.getty.edu/ontology#sourcePreferred> <http://vocab.getty.edu/tgn/source/2009007144> ;
+	<http://purl.org/dc/terms/source> <http://vocab.getty.edu/tgn/source/2009007144> ;
+	<http://purl.org/dc/elements/1.1/identifier> "1005660042" ;
+	<http://purl.org/dc/terms/language> <http://vocab.getty.edu/aat/300388118> , <http://vocab.getty.edu/language/zh-Latn-pinyin-x-notone> .
+
+<http://vocab.getty.edu/tgn/term/1005660047-zh-Latn> a <http://www.w3.org/2008/05/skos-xl#Label> ;
+	<http://vocab.getty.edu/ontology#term> "Dong'an"@zh-latn ;
+	<http://vocab.getty.edu/ontology#displayOrder> "2"^^<http://www.w3.org/2001/XMLSchema#positiveInteger> ;
+	<http://www.w3.org/2008/05/skos-xl#literalForm> "Dong'an"@zh-latn ;
+	<http://vocab.getty.edu/ontology#termFlag> <http://vocab.getty.edu/term/flag/Vernacular> ;
+	<http://purl.org/dc/terms/contributor> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://vocab.getty.edu/ontology#contributorNonPreferred> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://purl.org/dc/terms/source> <http://vocab.getty.edu/tgn/source/2009007144> ;
+	<http://purl.org/dc/elements/1.1/identifier> "1005660047" ;
+	<http://purl.org/dc/terms/language> <http://vocab.getty.edu/aat/300388122> , <http://vocab.getty.edu/language/zh-Latn> .
+
+<http://vocab.getty.edu/tgn/term/1005660046-zh-Latn> a <http://www.w3.org/2008/05/skos-xl#Label> ;
+	<http://vocab.getty.edu/ontology#term> "Pai-ya"@zh-latn ;
+	<http://vocab.getty.edu/ontology#displayOrder> "3"^^<http://www.w3.org/2001/XMLSchema#positiveInteger> ;
+	<http://www.w3.org/2008/05/skos-xl#literalForm> "Pai-ya"@zh-latn ;
+	<http://vocab.getty.edu/ontology#termFlag> <http://vocab.getty.edu/term/flag/Vernacular> ;
+	<http://purl.org/dc/terms/contributor> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://vocab.getty.edu/ontology#contributorNonPreferred> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://purl.org/dc/terms/source> <http://vocab.getty.edu/tgn/source/2009007144> ;
+	<http://purl.org/dc/elements/1.1/identifier> "1005660046" ;
+	<http://purl.org/dc/terms/language> <http://vocab.getty.edu/aat/300388122> , <http://vocab.getty.edu/language/zh-Latn> .
+
+<http://vocab.getty.edu/tgn/term/1005660045-zh-Latn> a <http://www.w3.org/2008/05/skos-xl#Label> ;
+	<http://vocab.getty.edu/ontology#term> "Pai-ya-shih"@zh-latn ;
+	<http://vocab.getty.edu/ontology#displayOrder> "4"^^<http://www.w3.org/2001/XMLSchema#positiveInteger> ;
+	<http://www.w3.org/2008/05/skos-xl#literalForm> "Pai-ya-shih"@zh-latn ;
+	<http://vocab.getty.edu/ontology#termFlag> <http://vocab.getty.edu/term/flag/Vernacular> ;
+	<http://purl.org/dc/terms/contributor> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://vocab.getty.edu/ontology#contributorNonPreferred> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://purl.org/dc/terms/source> <http://vocab.getty.edu/tgn/source/2009007144> ;
+	<http://purl.org/dc/elements/1.1/identifier> "1005660045" ;
+	<http://purl.org/dc/terms/language> <http://vocab.getty.edu/aat/300388122> , <http://vocab.getty.edu/language/zh-Latn> .
+
+<http://vocab.getty.edu/tgn/term/1005660044-zh-Latn> a <http://www.w3.org/2008/05/skos-xl#Label> ;
+	<http://vocab.getty.edu/ontology#term> "Tung-an"@zh-latn ;
+	<http://vocab.getty.edu/ontology#displayOrder> "5"^^<http://www.w3.org/2001/XMLSchema#positiveInteger> ;
+	<http://www.w3.org/2008/05/skos-xl#literalForm> "Tung-an"@zh-latn ;
+	<http://vocab.getty.edu/ontology#termFlag> <http://vocab.getty.edu/term/flag/Vernacular> ;
+	<http://purl.org/dc/terms/contributor> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://vocab.getty.edu/ontology#contributorNonPreferred> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://purl.org/dc/terms/source> <http://vocab.getty.edu/tgn/source/2009007144> ;
+	<http://purl.org/dc/elements/1.1/identifier> "1005660044" ;
+	<http://purl.org/dc/terms/language> <http://vocab.getty.edu/aat/300388122> , <http://vocab.getty.edu/language/zh-Latn> .
+
+<http://vocab.getty.edu/tgn/term/1005660043-zh-Latn> a <http://www.w3.org/2008/05/skos-xl#Label> ;
+	<http://vocab.getty.edu/ontology#term> "Tung-an-hsien"@zh-latn ;
+	<http://vocab.getty.edu/ontology#displayOrder> "6"^^<http://www.w3.org/2001/XMLSchema#positiveInteger> ;
+	<http://www.w3.org/2008/05/skos-xl#literalForm> "Tung-an-hsien"@zh-latn ;
+	<http://vocab.getty.edu/ontology#termFlag> <http://vocab.getty.edu/term/flag/Vernacular> ;
+	<http://purl.org/dc/terms/contributor> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://vocab.getty.edu/ontology#contributorNonPreferred> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://purl.org/dc/terms/source> <http://vocab.getty.edu/tgn/source/2009007144> ;
+	<http://purl.org/dc/elements/1.1/identifier> "1005660043" ;
+	<http://purl.org/dc/terms/language> <http://vocab.getty.edu/aat/300388122> , <http://vocab.getty.edu/language/zh-Latn> .
+
+<http://vocab.getty.edu/tgn/term/1005660048-zh> a <http://www.w3.org/2008/05/skos-xl#Label> ;
+	<http://vocab.getty.edu/ontology#term> "白牙市"@zh ;
+	<http://vocab.getty.edu/ontology#displayOrder> "7"^^<http://www.w3.org/2001/XMLSchema#positiveInteger> ;
+	<http://www.w3.org/2008/05/skos-xl#literalForm> "白牙市"@zh ;
+	<http://vocab.getty.edu/ontology#termFlag> <http://vocab.getty.edu/term/flag/Vernacular> ;
+	<http://purl.org/dc/terms/contributor> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://vocab.getty.edu/ontology#contributorNonPreferred> <http://vocab.getty.edu/tgn/contrib/10000000> ;
+	<http://purl.org/dc/terms/source> <http://vocab.getty.edu/tgn/source/2009007144> ;
+	<http://purl.org/dc/elements/1.1/identifier> "1005660048" ;
+	<http://purl.org/dc/terms/language> <http://vocab.getty.edu/aat/300388113> , <http://vocab.getty.edu/language/zh> .
+
+<http://vocab.getty.edu/tgn/rel/8201269-placeType-300008347> a <http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement> ;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> <http://vocab.getty.edu/tgn/8201269> ;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> <http://vocab.getty.edu/ontology#placeTypePreferred> ;
+	<http://www.w3.org/1999/02/22-rdf-syntax-ns#object> <http://vocab.getty.edu/aat/300008347> ;
+	<http://vocab.getty.edu/ontology#displayOrder> "1"^^<http://www.w3.org/2001/XMLSchema#positiveInteger> .
+
+<http://vocab.getty.edu/tgn/8201269-place> a <http://schema.org/Place> , <http://www.w3.org/2003/01/geo/wgs84_pos#SpatialThing> ;
+	<http://www.w3.org/2003/01/geo/wgs84_pos#lat> "26.38883"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+	<http://www.w3.org/2003/01/geo/wgs84_pos#long> "111.262131"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+	<http://creativecommons.org/ns#license> <http://opendatacommons.org/licenses/by/1.0/> ;
+	<http://purl.org/dc/terms/license> <http://opendatacommons.org/licenses/by/1.0/> ;
+	<http://rdfs.org/ns/void#inDataset> <http://vocab.getty.edu/dataset/tgn> ;
+	<http://schema.org/geo> <http://vocab.getty.edu/tgn/8201269-geometry> .
+
+<http://vocab.getty.edu/tgn/8201269-geometry> a <http://schema.org/GeoCoordinates> ;
+	<http://schema.org/latitude> "26.38883"^^<http://www.w3.org/2001/XMLSchema#decimal> ;
+	<http://schema.org/longitude> "111.262131"^^<http://www.w3.org/2001/XMLSchema#decimal> .
