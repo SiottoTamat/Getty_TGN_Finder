@@ -29,14 +29,14 @@ class Getty_TGN_Block_Data:
 
 
 class Getty_TGN_Location:
-    def __init__(self, folder: str|Path, rdf_file: str) -> None:
-        '''Class:
+    def __init__(self, folder: str | Path, rdf_file: str) -> None:
+        """Class:
         This class manages the acquisition of the coordinates
         from the rdf file
-        '''
+        """
         if type(folder) == Path or issubclass(type(folder), Path):
             self._folder = folder
-        elif type(folder) == str: 
+        elif type(folder) == str:
             self._folder = Path(folder)
         else:
             raise TypeError("{type(folder)} is not supported")
@@ -54,7 +54,8 @@ class Getty_TGN_Location:
         self.latitude, self.longitude = self.get_coordinates()
 
     def get_data(self) -> str:
-        return Path(self._folder, self._filename).read_text(encoding='utf-8')
+        """Get the data from the file as a string"""
+        return Path(self._folder, self._filename).read_text(encoding="utf-8")
 
     def get_coordinates(self) -> tuple:
         """Gets the coordinates from the rdf file"""
@@ -71,13 +72,17 @@ class Getty_TGN_Location:
                 longitude = float(o)
         return (latitude, longitude)
 
-    def prettify(self, indent:int = 0)-> str:
-        return (f"{self.query_name: <{indent}}\t"
-                f"{self.result_name: <{indent}}\t"
-                f"{self.result_type: <{indent}}\t"
-                f"{self.result_id: <{indent}}\t"
-                f"{self.latitude: <{indent}}\t"
-                f"{self.longitude: <{indent}}")
+    def prettify(self, indent: int = 0) -> str:
+        """Format the class attributes into a string with tabs separating the fields"""
+        return (
+            f"{self.query_name: <{indent}}\t"
+            f"{self.result_name: <{indent}}\t"
+            f"{self.result_type: <{indent}}\t"
+            f"{self.result_id: <{indent}}\t"
+            f"{self.latitude: <{indent}}\t"
+            f"{self.longitude: <{indent}}"
+        )
+
 
 class Getty_TGN_Request:
     """Class to manage a request of a query to GETTY_TGN Online Database"""
