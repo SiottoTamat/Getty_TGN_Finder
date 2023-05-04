@@ -15,6 +15,30 @@ standardized access to geographic information for their collections. It can also
 researchers and individuals interested in studying the history and geography of a particular
 region or place.
 
+## Example Code
+```python
+from Getty_Query_Class import Getty_TGN_Request
+from Getty_Query_Class import Getty_TGN_Location
+from pathlib import Path
+
+dump ='Save_to_folder'
+#get the results of a query for 'Tunganhsien'; the results will be saved as rdf files in the 'dump' folder
+retrieved = Getty_TGN_Request('Tunganhsien', save_to_folder='dump')
+#iterate through all the files in 'dump', search for the coordinates in the files, and print the results 
+folder = Path('dump')
+for file in folder.iterdir():
+    if file.suffix == '.rdf':
+        location = Getty_TGN_Location(folder, file.name)
+        print(location.prettify(25))
+```
+**result:**
+```python
+#the prettify result:
+#query, name found, type, code, latitude, longitude
+Tunganhsien     Baiyashi        inhabited place 8201269 26.38883        111.262131
+Tunganhsien     Datong Jiedao   fourth level subdivision        8208848 24.734833       118.143026
+Tunganhsien     Zixishi fourth level subdivision        8687656 26.331  111.236
+```
 
 
 ## Getty_TGN_Request class 
