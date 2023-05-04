@@ -9,6 +9,8 @@ from rdflib import URIRef
 
 @dataclass
 class Getty_TGN_Block_Data:
+    """This is the dataclass used to save all the data from the results of the query on the Getty TGN website"""
+
     name: str
     type: str
     id: int
