@@ -21,23 +21,94 @@ from Getty_Query_Class import Getty_TGN_Request
 from Getty_Query_Class import Getty_TGN_Location
 from pathlib import Path
 
-dump ='Save_to_folder'
-#get the results of a query for 'Tunganhsien'; the results will be saved as rdf files in the 'dump' folder
-retrieved = Getty_TGN_Request('Tunganhsien', save_to_folder='dump')
-#iterate through all the files in 'dump', search for the coordinates in the files, and print the results 
-folder = Path('dump')
+list_names = ["Fort Perovsky", "Peking", "Amsterdam Island", "NonePlace001"]
+
+savefolder = "SaveFolder"
+# find the results of each query and save them in the SaveFolder
+# print all the results of each query
+for name in list_names:
+    print(f"{name}:\n")
+    retrieved = Getty_TGN_Request(name, save_to_folder=savefolder)
+    if retrieved.findings:
+        retrieved.print_findings()
+    else:
+        print(f"{name} not found\n\n")
+# for each json file downloaded, create a Getty_TGN_Location object.
+# print the prettified version of the object.
+folder = Path(savefolder)
 for file in folder.iterdir():
-    if file.suffix == '.rdf':
+    if file.suffix == ".jsonld":
         location = Getty_TGN_Location(folder, file.name)
-        print(location.prettify(25))
+        print(location.prettify(5))
 ```
 **result:**
 ```python
-#the prettify result:
-#query, name found, type, code, latitude, longitude
-Tunganhsien     Baiyashi        inhabited place 8201269 26.38883        111.262131
-Tunganhsien     Datong Jiedao   fourth level subdivision        8208848 24.734833       118.143026
-Tunganhsien     Zixishi fourth level subdivision        8687656 26.331  111.236
+Fort Perovsky:
+
+Result 0:
+Kyzylorda         inhabited place   7010344
+Qyzylorda         province          1003384
+Kazakhstan        nation            7014786
+Asia              continent         1000004
+World             facet             7029392
+-------
+Peking:
+
+Result 0:
+Bai He    stream    8213312
+China     nation    1000111
+Asia      continent 1000004
+World     facet     7029392
+-------
+Result 1:
+Beijing           inhabited place   7001758
+Beijing Shi       municipality      1000956
+China             nation            1000111
+Asia              continent         1000004
+World             facet             7029392
+-------
+Result 2:
+Beijing Shi       municipality      1000956
+China             nation            1000111
+Asia              continent         1000004
+World             facet             7029392
+-------
+Result 3:
+Kosciusko                   inhabited place             2056763
+Attala county               county                      2001089
+Mississippi                 state                       7007522
+United States               nation                      7012149
+North and Central America   continent                   1000001
+World                       facet                       7029392
+-------
+Result 4:
+Peking                      inhabited place             7119857
+Saxony-Anhalt               state                       7003687
+Germany                     nation                      7000084
+Europe                      continent                   1000003
+World                       facet                       7029392
+-------
+Amsterdam Island:
+
+Result 0:
+Île Amsterdam                         island                                1006266
+French Southern and Antarctic Lands   overseas territory                    1000163
+France                                nation                                1000070
+Europe                                continent                             1000003
+World                                 facet                                 7029392
+-------
+NonePlace001:
+
+NonePlace001 not found
+
+
+Amsterdam Island        Île Amsterdam   island  1006266 77.5333 -37.8667
+Fort Perovsky   Kyzylorda       inhabited place 7010344 65.4667 44.8667
+Peking  Bai He  stream  8213312 116.836399      40.558191
+Peking  Beijing Shi     municipality    1000956 116.416667      40.2
+Peking  Beijing inhabited place 7001758 116.388869      39.928819
+Peking  Kosciusko       inhabited place 2056763 -89.5833        33.05
+Peking  Peking  inhabited place 7119857 11.116667       52.083333
 ```
 
 
@@ -45,7 +116,7 @@ Tunganhsien     Zixishi fourth level subdivision        8687656 26.331  111.236
 Overall, the Getty_TGN_Request class provides a convenient way to query the Getty Thesaurus of Geographic Names online database and retrieve data for specific places.
 The class is used to manage a request for a query to the Getty Thesaurus of Geographic Names (TGN) online database. 
 
-To retrieve a query, you can simply create an instance of the class; if you desire to automatically save the rdf files, you can specify the folder name with the optional argument 'save_to_folder' as in the example below:
+To retrieve a query, you can simply create an instance of the class; if you desire to automatically save the jsonld files, you can specify the folder name with the optional argument 'save_to_folder' as in the example below:
 
 `retrieved = Getty_TGN_Request('query', save_to_folder='query_folder')`
 
@@ -72,20 +143,20 @@ This method takes a string that is organized as "A (Atype) [Acode], B (Btype) [B
 This method prints the findings attribute in a readable format to the console. It first determines the maximum length of each block of data for all the found places and then prints each block of data for each place with the maximum length determined earlier.
 
 ### save_findings method
-This method saves the results of the query to files in the specified directory. It first constructs a filename based on the query parameters and the data extracted from the first place in the findings list. It then retrieves the RDF data for the first place in the findings list and saves it to a file in the specified directory with the constructed filename.
+This method saves the results of the query to files in the specified directory. It first constructs a filename based on the query parameters and the data extracted from the first place in the findings list. It then retrieves the jsonld data for the first place in the findings list and saves it to a file in the specified directory with the constructed filename.
 
 
 ## The Getty_TGN_Location class:
-It manages the acquisition of the coordinates from the rdf file. The class takes two arguments: **folder** and **rdf_file**. The folder argument specifies the directory path where the rdf file is located, and the rdf_file argument specifies the rdf file name. If the folder argument is a string, it will be converted to a Path object. 
+It manages the acquisition of the coordinates from the jsonld file. The class takes two arguments: **folder** and **jsonld_file**. The folder argument specifies the directory path where the jsonld file is located, and the jsonld_file argument specifies the jsonld file name. If the folder argument is a string, it will be converted to a Path object. 
 
 ### The **__init__** method 
 Initializes several instance variables, such as _folder, _filename, _data, query_name, result_name, result_type, result_id, **latitude**, and **longitude**. 
 
 ### get_data method 
-Returns the contents of the rdf file as a string. 
+Returns the contents of the jsonld file as a string. 
 
 ### get_coordinates method 
-Extracts the latitude and longitude coordinates from the rdf file. 
+Extracts the latitude and longitude coordinates from the jsonld file. 
 
 ### prettify method 
 Formats the class attributes into a string with tabs separating the fields.
