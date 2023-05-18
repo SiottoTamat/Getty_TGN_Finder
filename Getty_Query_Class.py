@@ -1,8 +1,8 @@
 from dataclasses import dataclass
-import requests
 import xml.etree.cElementTree as ET
 from pathlib import Path
-from rdflib import Graph, URIRef
+import urllib.request
+import json
 
 __author__ = "Andrea Siotto"
 __copyright__ = "MIT License"
@@ -15,8 +15,10 @@ __status__ = "Development"
 
 
 @dataclass
-class Getty_TGN_Block_Data:
-    """This is the dataclass used to save all the data from the results of the query on the Getty TGN website"""
+class Getty_TGN_Element:
+    """This is the dataclass used to save all the data from the
+    results of the query on the Getty TGN website.
+    """
 
     name: str
     type: str
@@ -33,15 +35,15 @@ class Getty_TGN_Block_Data:
     def get_data_list(self) -> list:
         return [self.name, self.type, str(self.id)]
 
-    def get_rdf_link(self) -> str:
-        return f"http://vocab.getty.edu/tgn/{self.id}.rdf"
+    def get_json_link(self) -> str:
+        return f"http://vocab.getty.edu/tgn/{self.id}.json"
 
 
 class Getty_TGN_Location:
-    def __init__(self, folder: str | Path, rdf_file: str) -> None:
+    def __init__(self, folder: str | Path, json_file: str) -> None:
         """Class:
         This class manages the acquisition of the coordinates
-        from the rdf file
+        from the json/jsonld file
         """
         if type(folder) == Path or issubclass(type(folder), Path):
             self._folder = folder
@@ -49,37 +51,32 @@ class Getty_TGN_Location:
             self._folder = Path(folder)
         else:
             raise TypeError("{type(folder)} is not supported")
-        self._filename = Path(rdf_file)
+        self._filename = Path(json_file)
         self._data = self.get_data()
-        if self._filename.suffix != ".rdf":
+        if self._filename.suffix not in [".json", ".jsonld"]:
             raise ValueError(
-                f"Getty_TGN_Location: {self._filename.name} is not an rdf file"
+                f"Getty_TGN_Location: {self._filename.name} is not an json or jsonld file"
             )
 
         self.query_name = self._filename.name.split("-")[0]
         self.result_name = self._filename.name.split("-")[1]
         self.result_type = self._filename.name.split("-")[2]
         self.result_id = self._filename.name.split("-")[3].split(".")[0]
-        self.latitude, self.longitude = self.get_coordinates()
+        self.latitude, self.longitude = self.get_json_coordinates()
 
     def get_data(self) -> str:
         """Get the data from the file as a string"""
         return Path(self._folder, self._filename).read_text(encoding="utf-8")
 
-    def get_coordinates(self) -> tuple:
-        """Gets the coordinates from the rdf file"""
-        g = Graph()
-        uri_lat = URIRef("http://schema.org/latitude")
-        uri_long = URIRef("http://schema.org/longitude")
-        latitude = None
-        longitude = None
-        g.parse(self._folder / self._filename)
-        for _s, p, o in g:
-            if p == uri_lat:
-                latitude = float(o)
-            if p == uri_long:
-                longitude = float(o)
-        return (latitude, longitude)
+    def get_json_coordinates(self) -> tuple:
+        file = self._folder / self._filename
+        with open(file, "r") as f:
+            data = json.load(f)
+        for obj in data["identified_by"]:
+            if obj.get("type") == "crm:E47_Spatial_Coordinates":
+                aslist = json.loads(obj.get("value"))
+                return tuple(aslist)
+        return (None, None)
 
     def prettify(self, indent: int = 0) -> str:
         """Format the class attributes into a string with tabs separating the fields"""
@@ -94,7 +91,14 @@ class Getty_TGN_Location:
 
 
 class Getty_TGN_Request:
-    """Class to manage a request of a query to GETTY_TGN Online Database"""
+    """Class to manage a request of a query to GETTY_TGN Online Database.
+    If you know the place type and/or the nation, it is strongly recommended
+    to add them as parameters.
+    If the parameter save_to_folder is set to a folder, then it automatically
+    attempts to retrieve and save the json files of the results in the given folder.
+    the important attribute is self.findings, which is a list of Getty_TGN_Element objects.
+    If there are no results for the query, self.findings is an empty list.
+    """
 
     def __init__(
         self,
@@ -103,29 +107,15 @@ class Getty_TGN_Request:
         query_nationid: str = "",
         save_to_folder: str = "",
     ) -> None:
-
-        _mainlink = (
-            "http://vocabsservices.getty.edu/TGNService.asmx/TGNGetTermMatch?name="
-        )
-        _placetype_attr = "misr&placetypeid="
-        _nation_attr = "&nationid="
-
         self.queryname = str(query_name)
         self.querytype = str(query_placetypeid)
         self.querynation = str(query_nationid)
-
-        self._link = (
-            f"{_mainlink}%22{query_name}%22"
-            f"{_placetype_attr}%22{query_placetypeid}%22"
-            f"{_nation_attr}%22{query_nationid}%22"
+        self.findings = self.SOAP_Request(
+            self.queryname, self.querytype, self.querynation
         )
-
-        response = requests.get(self._link)
-        self.findings = self._XML_find_subjects(response.text)
 
         if save_to_folder:
             self.save_findings(save_to_folder)
-        # self._status = ""
 
     def _XML_find_subjects(self, xml) -> list:
         tree = ET.fromstring(xml)
@@ -143,7 +133,7 @@ class Getty_TGN_Request:
         for node in nodes:
             node = node.replace(" (", "@").replace(") [", "@")
             blocks = node.split("@")
-            datum = Getty_TGN_Block_Data(
+            datum = Getty_TGN_Element(
                 blocks[0].strip(), blocks[1].strip(), blocks[2].strip()
             )
             all_nodes.append(datum)
@@ -168,10 +158,81 @@ class Getty_TGN_Request:
                 + "-"
                 + self.querynation
                 + "-".join(finding[0].get_data_list())
-                + ".rdf"
+                + ".jsonld"
             )
-            retrieved = requests.get(finding[0].get_rdf_link()).text
+            try:
+                #  the request has to have these specific headers
+                baseurl = f"https://vocab.getty.edu/tgn/{finding[0].id}"
+                headers = {"Accept": "application/ld+json; charset=utf-8"}
+                req = urllib.request.Request(baseurl, headers=headers)
+                data = urllib.request.urlopen(req).read().decode("utf-8")
+
+            except Exception as e:
+                print(f"Error in retrieving the json file:\n\t{baseurl}\n\t{e}")
+            #  create a json file in the folder given, load the json and save the prettified version json.dumps()
             Path(folder).mkdir(exist_ok=True)
+            json_data = json.loads(data)
             full_path = folder / filename
             with full_path.open(mode="w", encoding="utf-8") as file:
-                file.write(retrieved)
+                file.write(json.dumps(json_data, indent=4))
+
+    def SOAP_Request(
+        self, query: str, query_type: str = "", query_nation: str = ""
+    ) -> str | None:
+        """This class deals with the SOAP request to the server"""
+
+        def SOAP_query(xml_string: str) -> list:
+            """This inner function get the string obtained by the request and return a list of all the results"""
+            namespaces = {
+                "soap": "http://www.w3.org/2003/05/soap-envelope",
+                "tgn": "http://vocabsservices.getty.edu/",
+                "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+            }
+            root = ET.fromstring(xml_string)
+            nodes = root.findall(
+                ".//*Subject", namespaces
+            )  # find all results of the query
+            lines = []
+            for node in nodes:
+                dataline = node.iter(
+                    "Preferred_Parent"
+                )  # extract the line with the results
+                for data in dataline:
+                    lines.append(data.text)
+            return lines
+
+        # the strings for the SOAP request
+        raw_request = (
+            rf'<?xml version="1.0" encoding="utf-8"?>'
+            rf"<soap12:Envelope "
+            rf'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+            rf'xmlns:xsd="http://www.w3.org/2001/XMLSchema" '
+            rf'xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'
+            rf"<soap12:Body>"
+            rf'<TGNGetTermMatch xmlns="http://vocabsservices.getty.edu/">'
+            rf"<name>{query}</name>"
+            rf"<placetypeid>{query_type}</placetypeid>"
+            rf"<nationid>{query_nation}</nationid>"
+            rf"</TGNGetTermMatch>"
+            rf"</soap12:Body>"
+            rf"</soap12:Envelope>"
+        )
+        url = "http://vocabsservices.getty.edu/TGNService.asmx"
+        headers = {
+            "Content-Type": "application/soap+xml; charset=utf-8",
+            "Content-Length": str(len(raw_request)),
+        }
+
+        try:
+            # Create a POST request with the SOAP payload and headers
+            req = urllib.request.Request(
+                url, data=raw_request.encode("utf-8"), headers=headers
+            )
+            # Send the POST request and get the response
+            response = urllib.request.urlopen(req)
+        except Exception as e:
+            print(f"Error in connecting to SOAP server:\n\t{e}")
+            return None
+        return [
+            self._extract_data(x) for x in (SOAP_query(response.read().decode("utf-8")))
+        ]
