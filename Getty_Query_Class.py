@@ -90,7 +90,7 @@ class Getty_TGN_Location:
         )
 
 
-class Getty_TGN_Request:
+class Getty_TGN_Request_Json:
     """Class to manage a request of a query to GETTY_TGN Online Database.
     If you know the place type and/or the nation, it is strongly recommended
     to add them as parameters.
@@ -117,6 +117,11 @@ class Getty_TGN_Request:
         if save_to_folder:
             self.save_findings(save_to_folder)
 
+    def __str__(self):
+        returned = f"Query: {self.queryname}\nType: {self.querytype}\nNation: {self.querynation}\nResults:\n"
+        returned += self.prettify_findings() + "\n\n"
+        return returned
+
     def _XML_find_subjects(self, xml) -> list:
         tree = ET.fromstring(xml)
         returnlist = []
@@ -139,17 +144,20 @@ class Getty_TGN_Request:
             all_nodes.append(datum)
         return all_nodes
 
-    def print_findings(self):
+    def prettify_findings(self):
         """pretty print of self.findings"""
         max = 0
+        if not self.findings:
+            return "No results."
+        returned = ""
         for i, finding in enumerate(self.findings):
-            print(f"Result {i}:")
+            returned += f"Result {i}:\n"
             for block in finding:
                 if block._max_length > max:
                     max = block._max_length + 3
             for block in finding:
-                print(f"{block.name : <{max}}{block.type : <{max}}{block.id : <{max}}")
-            print("-------")
+                returned += f"{block.name : <{max}}{block.type : <{max}}{block.id : <{max}}\n-------\n"
+        return returned
 
     def save_findings(self, folder):
         for finding in self.findings:
@@ -181,7 +189,7 @@ class Getty_TGN_Request:
     ) -> str | None:
         """This class deals with the SOAP request to the server"""
 
-        def SOAP_query(xml_string: str) -> list:
+        def SOAP_find_results(xml_string: str) -> list:
             """This inner function get the string obtained by the request and return a list of all the results"""
             namespaces = {
                 "soap": "http://www.w3.org/2003/05/soap-envelope",
@@ -232,7 +240,8 @@ class Getty_TGN_Request:
             response = urllib.request.urlopen(req)
         except Exception as e:
             print(f"Error in connecting to SOAP server:\n\t{e}")
-            return None
+            return []
         return [
-            self._extract_data(x) for x in (SOAP_query(response.read().decode("utf-8")))
+            self._extract_data(x)
+            for x in (SOAP_find_results(response.read().decode("utf-8")))
         ]
