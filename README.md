@@ -17,89 +17,132 @@ region or place.
 
 ## Example Code
 ```python
-from Getty_Query_Class import Getty_TGN_Request
+from Getty_Query_Class import Getty_TGN_Request_Json
 from Getty_Query_Class import Getty_TGN_Location
 from pathlib import Path
 
-list_names = ["Fort Perovsky", "Peking", "Amsterdam Island", "NonePlace001"]
 
-savefolder = "SaveFolder"
-# find the results of each query and save them in the SaveFolder
-# print all the results of each query
-for name in list_names:
-    print(f"{name}:\n")
-    retrieved = Getty_TGN_Request(name, save_to_folder=savefolder)
-    if retrieved.findings:
-        retrieved.print_findings()
-    else:
-        print(f"{name} not found\n\n")
-# for each json file downloaded, create a Getty_TGN_Location object.
-# print the prettified version of the object.
-folder = Path(savefolder)
-for file in folder.iterdir():
-    if file.suffix == ".jsonld":
-        location = Getty_TGN_Location(folder, file.name)
-        print(location.prettify(5))
+def main():
+    list_names = ["Fort Perovsky", "Peking", "Amsterdam Island", "NonePlace001"]
+
+    savefolder = "Save_to"
+    for name in list_names:
+        retrieved = Getty_TGN_Request_Json(name, save_to_folder=savefolder)
+        print(retrieved)
+
+    folder = Path(savefolder)
+    for file in folder.iterdir():
+        if file.suffix == ".jsonld":
+            location = Getty_TGN_Location(folder, file.name)
+            print(location.prettify(5))
+
+
+if __name__ == "__main__":
+    main()
 ```
 **result:**
 ```python
-Fort Perovsky:
-
+Query: Fort Perovsky
+Type:
+Nation:
+Results:
 Result 0:
 Kyzylorda         inhabited place   7010344
+-------
 Qyzylorda         province          1003384
+-------
 Kazakhstan        nation            7014786
+-------
 Asia              continent         1000004
+-------
 World             facet             7029392
 -------
-Peking:
 
+
+
+Query: Peking
+Type:        
+Nation:
+Results:
 Result 0:
 Bai He    stream    8213312
+-------
 China     nation    1000111
+-------
 Asia      continent 1000004
+-------
 World     facet     7029392
 -------
 Result 1:
 Beijing           inhabited place   7001758
+-------
 Beijing Shi       municipality      1000956
+-------
 China             nation            1000111
+-------
 Asia              continent         1000004
+-------
 World             facet             7029392
 -------
 Result 2:
 Beijing Shi       municipality      1000956
+-------
 China             nation            1000111
+-------
 Asia              continent         1000004
+-------
 World             facet             7029392
 -------
 Result 3:
 Kosciusko                   inhabited place             2056763
+-------
 Attala county               county                      2001089
+-------
 Mississippi                 state                       7007522
+-------
 United States               nation                      7012149
+-------
 North and Central America   continent                   1000001
+-------
 World                       facet                       7029392
 -------
 Result 4:
 Peking                      inhabited place             7119857
+-------
 Saxony-Anhalt               state                       7003687
+-------
 Germany                     nation                      7000084
+-------
 Europe                      continent                   1000003
+-------
 World                       facet                       7029392
 -------
-Amsterdam Island:
 
+
+
+Query: Amsterdam Island
+Type:
+Nation:
+Results:
 Result 0:
 Île Amsterdam                         island                                1006266
+-------
 French Southern and Antarctic Lands   overseas territory                    1000163
+-------
 France                                nation                                1000070
+-------
 Europe                                continent                             1000003
+-------
 World                                 facet                                 7029392
 -------
-NonePlace001:
 
-NonePlace001 not found
+
+
+Query: NonePlace001
+Type:
+Nation:
+Results:
+No results.
 
 
 Amsterdam Island        Île Amsterdam   island  1006266 77.5333 -37.8667
@@ -112,51 +155,55 @@ Peking  Peking  inhabited place 7119857 11.116667       52.083333
 ```
 
 
-## Getty_TGN_Request class 
-Overall, the Getty_TGN_Request class provides a convenient way to query the Getty Thesaurus of Geographic Names online database and retrieve data for specific places.
-The class is used to manage a request for a query to the Getty Thesaurus of Geographic Names (TGN) online database. 
+# Getty_TGN_Request_Json
+Manages a request to the GETTY_TGN Online Database. It allows querying the database with optional parameters such as query name, place type ID, and nation ID. The class retrieves and stores the JSON results of the query. It uses the **SOAP_Request()** function to retrieve the results from the GETTY_TGN Online Database. It also utilizes the urllib.request module and the json module for retrieving and saving the JSON files.
 
-To retrieve a query, you can simply create an instance of the class; if you desire to automatically save the jsonld files, you can specify the folder name with the optional argument 'save_to_folder' as in the example below:
+The class has the following attributes and methods:
 
-`retrieved = Getty_TGN_Request('query', save_to_folder='query_folder')`
+## Attributes:
 
+queryname: A string representing the query name.
+querytype: A string representing the place type ID.
+querynation: A string representing the nation ID.
+results: A list of Getty_TGN_Element objects that store the results of the query.
 
+## Methods:
 
-**This class has the following methods and attributes:**
-
-### __init__ method
-The constructor for this class takes the following parameters:
-
-query_name: a string that represents the name of the place to search for.
-query_placetypeid: a string that represents the ID of the place type to search for (optional).
-query_nationid: a string that represents the ID of the nation to search for (optional).
-save_to_folder: a string that represents the path of the folder to save the results in (optional).
-Upon initialization, the _mainlink, _placetype_attr, and _nation_attr variables are used to construct a URL to query the TGN online database with the provided parameters. The query results are then parsed and stored in the findings attribute. If a save_to_folder is provided, the results are saved to files in the specified directory.
-
-### _XML_find_subjects method
-This method takes an XML string as an input and returns a list of dictionaries that contain information about the found places. It first parses the XML string with ElementTree and then iterates over the preferred_parent elements to extract the data for each place.
-
-### _extract_data method
-This method takes a string that is organized as "A (Atype) [Acode], B (Btype) [Bcode], ..." and returns a list of dictionaries with the name, type, and ID of each place. It first splits the input string into individual nodes and then extracts the data for each node by replacing characters and splitting the resulting strings.
-
-### print_findings method
-This method prints the findings attribute in a readable format to the console. It first determines the maximum length of each block of data for all the found places and then prints each block of data for each place with the maximum length determined earlier.
-
-### save_findings method
-This method saves the results of the query to files in the specified directory. It first constructs a filename based on the query parameters and the data extracted from the first place in the findings list. It then retrieves the jsonld data for the first place in the findings list and saves it to a file in the specified directory with the constructed filename.
+### __init__(): 
+The class constructor that initializes the instance variables and performs the query. It takes parameters for the query name, place type ID, nation ID, and an optional parameter to specify a folder to save the JSON files of the results.
+### __str__(): 
+Returns a string representation of the object, including the query details and the pretty-printed results.
+pretty_results: A property that returns a pretty-printed string representation of the query results.
+### save_jsons(): 
+Saves the JSON files of the query results to the specified folder.
 
 
-## The Getty_TGN_Location class:
-It manages the acquisition of the coordinates from the jsonld file. The class takes two arguments: **folder** and **jsonld_file**. The folder argument specifies the directory path where the jsonld file is located, and the jsonld_file argument specifies the jsonld file name. If the folder argument is a string, it will be converted to a Path object. 
+# Getty_TGN_Location
+Manages the acquisition of coordinates from a JSON or JSONLD file. 
+The class checks the type of the folder parameter and converts it to a Path object if it is a string. It reads the JSON file, extracts the necessary information from the filename, and retrieves the latitude and longitude coordinates from the JSON data.
+It has the following attributes and methods:
 
-### The **__init__** method 
-Initializes several instance variables, such as _folder, _filename, _data, query_name, result_name, result_type, result_id, **latitude**, and **longitude**. 
+## Attributes:
 
-### get_data method 
-Returns the contents of the jsonld file as a string. 
+_folder: A Path object representing the folder path where the JSON file is located.
+_filename: A Path object representing the name of the JSON file.
+_data: A string containing the data from the file.
+query_name: A string representing the query name extracted from the filename.
+result_name: A string representing the result name extracted from the filename.
+result_type: A string representing the result type extracted from the filename.
+result_id: A string representing the result ID extracted from the filename.
+latitude: A float representing the latitude coordinate.
+longitude: A float representing the longitude coordinate.
 
-### get_coordinates method 
-Extracts the latitude and longitude coordinates from the jsonld file. 
+## Methods:
 
-### prettify method 
+### __init__():
+The class constructor that initializes the instance variables. It takes parameters for the folder path and the name of the JSON file.
+### get_data():
+Reads the data from the JSON file and returns it as a string.
+### coordinates:
+A property that retrieves the coordinates from the JSON data and returns them as a tuple of floats.
+### prettify():
 Formats the class attributes into a string with tabs separating the fields.
+
+
