@@ -171,7 +171,7 @@ class Getty_TGN_Request_Json:
 
 def SOAP_Request(
     query: str, query_type: str = "", query_nation: str = ""
-) -> list(Getty_TGN_Element):
+) -> list[Getty_TGN_Element]:
     """This class deals with the SOAP request to the server"""
 
     def _SOAP_find_results(xml_string: str) -> list:
