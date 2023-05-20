@@ -35,8 +35,9 @@ class Getty_TGN_Element:
     def get_data_list(self) -> list:
         return [self.name, self.type, str(self.id)]
 
-    def get_json_link(self) -> str:
-        return f"http://vocab.getty.edu/tgn/{self.id}.json"
+    @property
+    def link(self) -> str:
+        return f"https://vocab.getty.edu/tgn/{self.id}"
 
 
 class Getty_TGN_Location:
@@ -62,13 +63,14 @@ class Getty_TGN_Location:
         self.result_name = self._filename.name.split("-")[1]
         self.result_type = self._filename.name.split("-")[2]
         self.result_id = self._filename.name.split("-")[3].split(".")[0]
-        self.latitude, self.longitude = self.get_json_coordinates()
+        self.latitude, self.longitude = self.coordinates
 
     def get_data(self) -> str:
         """Get the data from the file as a string"""
         return Path(self._folder, self._filename).read_text(encoding="utf-8")
 
-    def get_json_coordinates(self) -> tuple:
+    @property
+    def coordinates(self) -> tuple:
         file = self._folder / self._filename
         with open(file, "r") as f:
             data = json.load(f)
@@ -96,8 +98,11 @@ class Getty_TGN_Request_Json:
     to add them as parameters.
     If the parameter save_to_folder is set to a folder, then it automatically
     attempts to retrieve and save the json files of the results in the given folder.
-    the important attribute is self.findings, which is a list of Getty_TGN_Element objects.
+    the important attribute is self.findings, which is a list of Getty_TGN_Element
+    objects representing the results returned from the query. Each Gerry_TGN_Element
+    records
     If there are no results for the query, self.findings is an empty list.
+
     """
 
     def __init__(
@@ -110,26 +115,84 @@ class Getty_TGN_Request_Json:
         self.queryname = str(query_name)
         self.querytype = str(query_placetypeid)
         self.querynation = str(query_nationid)
-        self.findings = self.SOAP_Request(
+        self.results: list(Getty_TGN_Element) = SOAP_Request(
             self.queryname, self.querytype, self.querynation
         )
 
         if save_to_folder:
-            self.save_findings(save_to_folder)
+            self.save_jsons(save_to_folder)
 
     def __str__(self):
         returned = f"Query: {self.queryname}\nType: {self.querytype}\nNation: {self.querynation}\nResults:\n"
-        returned += self.prettify_findings() + "\n\n"
+        returned += self.pretty_results + "\n\n"
         return returned
 
-    def _XML_find_subjects(self, xml) -> list:
-        tree = ET.fromstring(xml)
-        returnlist = []
-        for element in tree.iter("preferred_parent"):
-            returnlist.append(self._extract_data(element.text))
-        return returnlist
+    @property
+    def pretty_results(self):
+        """pretty print of self.results"""
+        max = 0
+        if not self.results:
+            return "No results."
+        returned = ""
+        for i, finding in enumerate(self.results):
+            returned += f"Result {i}:\n"
+            for block in finding:
+                if block._max_length > max:
+                    max = block._max_length + 3
+            for block in finding:
+                returned += f"{block.name : <{max}}{block.type : <{max}}{block.id : <{max}}\n-------\n"
+        return returned
 
-    def _extract_data(self, data: str) -> dict:
+    def save_jsons(self, folder):
+        for finding in self.results:
+            filename = Path(
+                self.queryname
+                + "-"
+                + self.querynation
+                + "-".join(finding[0].get_data_list())
+                + ".jsonld"
+            )
+            try:
+                #  the request has to have these specific headers
+                baseurl = finding[0].link
+                headers = {"Accept": "application/ld+json; charset=utf-8"}
+                req = urllib.request.Request(baseurl, headers=headers)
+                data = urllib.request.urlopen(req).read().decode("utf-8")
+
+            except Exception as e:
+                print(f"Error in retrieving the json file:\n\t{baseurl}\n\t{e}")
+            #  create a json file in the folder given, load the json and save the prettified version json.dumps()
+            Path(folder).mkdir(exist_ok=True)
+            json_data = json.loads(data)
+            full_path = folder / filename
+            with full_path.open(mode="w", encoding="utf-8") as file:
+                file.write(json.dumps(json_data, indent=4))
+
+
+def SOAP_Request(
+    query: str, query_type: str = "", query_nation: str = ""
+) -> list(Getty_TGN_Element):
+    """This class deals with the SOAP request to the server"""
+
+    def _SOAP_find_results(xml_string: str) -> list:
+        """This inner function get the string obtained by the request and return a list of all the results"""
+        namespaces = {
+            "soap": "http://www.w3.org/2003/05/soap-envelope",
+            "tgn": "http://vocabsservices.getty.edu/",
+            "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+        }
+        root = ET.fromstring(xml_string)
+        nodes = root.findall(".//*Subject", namespaces)  # find all results of the query
+        lines = []
+        for node in nodes:
+            dataline = node.iter(
+                "Preferred_Parent"
+            )  # extract the line with the results
+            for data in dataline:
+                lines.append(data.text)
+        return lines
+
+    def _extract_data(data: str) -> dict:
         """take a string organized as:
         A (Atype) [Acode], B (Btype) [Bcode], ...
         and return a list of dicts with name:A, type:Atype, id:Acode..."""
@@ -144,104 +207,38 @@ class Getty_TGN_Request_Json:
             all_nodes.append(datum)
         return all_nodes
 
-    def prettify_findings(self):
-        """pretty print of self.findings"""
-        max = 0
-        if not self.findings:
-            return "No results."
-        returned = ""
-        for i, finding in enumerate(self.findings):
-            returned += f"Result {i}:\n"
-            for block in finding:
-                if block._max_length > max:
-                    max = block._max_length + 3
-            for block in finding:
-                returned += f"{block.name : <{max}}{block.type : <{max}}{block.id : <{max}}\n-------\n"
-        return returned
+    # the strings for the SOAP request
+    raw_request = (
+        rf'<?xml version="1.0" encoding="utf-8"?>'
+        rf"<soap12:Envelope "
+        rf'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
+        rf'xmlns:xsd="http://www.w3.org/2001/XMLSchema" '
+        rf'xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'
+        rf"<soap12:Body>"
+        rf'<TGNGetTermMatch xmlns="http://vocabsservices.getty.edu/">'
+        rf"<name>{query}</name>"
+        rf"<placetypeid>{query_type}</placetypeid>"
+        rf"<nationid>{query_nation}</nationid>"
+        rf"</TGNGetTermMatch>"
+        rf"</soap12:Body>"
+        rf"</soap12:Envelope>"
+    )
+    url = "http://vocabsservices.getty.edu/TGNService.asmx"
+    headers = {
+        "Content-Type": "application/soap+xml; charset=utf-8",
+        "Content-Length": str(len(raw_request)),
+    }
 
-    def save_findings(self, folder):
-        for finding in self.findings:
-            filename = Path(
-                self.queryname
-                + "-"
-                + self.querynation
-                + "-".join(finding[0].get_data_list())
-                + ".jsonld"
-            )
-            try:
-                #  the request has to have these specific headers
-                baseurl = f"https://vocab.getty.edu/tgn/{finding[0].id}"
-                headers = {"Accept": "application/ld+json; charset=utf-8"}
-                req = urllib.request.Request(baseurl, headers=headers)
-                data = urllib.request.urlopen(req).read().decode("utf-8")
-
-            except Exception as e:
-                print(f"Error in retrieving the json file:\n\t{baseurl}\n\t{e}")
-            #  create a json file in the folder given, load the json and save the prettified version json.dumps()
-            Path(folder).mkdir(exist_ok=True)
-            json_data = json.loads(data)
-            full_path = folder / filename
-            with full_path.open(mode="w", encoding="utf-8") as file:
-                file.write(json.dumps(json_data, indent=4))
-
-    def SOAP_Request(
-        self, query: str, query_type: str = "", query_nation: str = ""
-    ) -> str | None:
-        """This class deals with the SOAP request to the server"""
-
-        def SOAP_find_results(xml_string: str) -> list:
-            """This inner function get the string obtained by the request and return a list of all the results"""
-            namespaces = {
-                "soap": "http://www.w3.org/2003/05/soap-envelope",
-                "tgn": "http://vocabsservices.getty.edu/",
-                "xsi": "http://www.w3.org/2001/XMLSchema-instance",
-            }
-            root = ET.fromstring(xml_string)
-            nodes = root.findall(
-                ".//*Subject", namespaces
-            )  # find all results of the query
-            lines = []
-            for node in nodes:
-                dataline = node.iter(
-                    "Preferred_Parent"
-                )  # extract the line with the results
-                for data in dataline:
-                    lines.append(data.text)
-            return lines
-
-        # the strings for the SOAP request
-        raw_request = (
-            rf'<?xml version="1.0" encoding="utf-8"?>'
-            rf"<soap12:Envelope "
-            rf'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
-            rf'xmlns:xsd="http://www.w3.org/2001/XMLSchema" '
-            rf'xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">'
-            rf"<soap12:Body>"
-            rf'<TGNGetTermMatch xmlns="http://vocabsservices.getty.edu/">'
-            rf"<name>{query}</name>"
-            rf"<placetypeid>{query_type}</placetypeid>"
-            rf"<nationid>{query_nation}</nationid>"
-            rf"</TGNGetTermMatch>"
-            rf"</soap12:Body>"
-            rf"</soap12:Envelope>"
+    try:
+        # Create a POST request with the SOAP payload and headers
+        req = urllib.request.Request(
+            url, data=raw_request.encode("utf-8"), headers=headers
         )
-        url = "http://vocabsservices.getty.edu/TGNService.asmx"
-        headers = {
-            "Content-Type": "application/soap+xml; charset=utf-8",
-            "Content-Length": str(len(raw_request)),
-        }
-
-        try:
-            # Create a POST request with the SOAP payload and headers
-            req = urllib.request.Request(
-                url, data=raw_request.encode("utf-8"), headers=headers
-            )
-            # Send the POST request and get the response
-            response = urllib.request.urlopen(req)
-        except Exception as e:
-            print(f"Error in connecting to SOAP server:\n\t{e}")
-            return []
-        return [
-            self._extract_data(x)
-            for x in (SOAP_find_results(response.read().decode("utf-8")))
-        ]
+        # Send the POST request and get the response
+        response = urllib.request.urlopen(req)
+    except Exception as e:
+        print(f"Error in connecting to SOAP server:\n\t{e}")
+        return []
+    return [
+        _extract_data(x) for x in (_SOAP_find_results(response.read().decode("utf-8")))
+    ]
