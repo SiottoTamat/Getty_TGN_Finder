@@ -15,6 +15,9 @@ standardized access to geographic information for their collections. It can also
 researchers and individuals interested in studying the history and geography of a particular
 region or place.
 
+The list of types of location is in the **location_types_pickled.json** file. If needed, you can
+update the data using the function in the Getty_Location_Types module.
+
 ## Example Code
 ```python
 from Getty_Query_Class import Getty_TGN_Request_Json
