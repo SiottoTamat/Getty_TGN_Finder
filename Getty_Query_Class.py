@@ -3,6 +3,7 @@ import xml.etree.cElementTree as ET
 from pathlib import Path
 import urllib.request
 import json
+import re
 
 __author__ = "Andrea Siotto"
 __copyright__ = "MIT License"
@@ -12,6 +13,12 @@ __version__ = "1.0"
 __maintainer__ = "Andrea Siotto"
 __email__ = "siotto.andrea@gmail.com"
 __status__ = "Development"
+
+
+def sanitize_filename(filename):
+    invalid_chars = r'\/:*?"<>|'  # Invalid characters for filenames
+    sanitized_filename = re.sub(f"[{re.escape(invalid_chars)}]", "_", filename)
+    return sanitized_filename
 
 
 @dataclass
@@ -46,9 +53,9 @@ class Getty_TGN_Location:
         This class manages the acquisition of the coordinates
         from the json/jsonld file
         """
-        if type(folder) == Path or issubclass(type(folder), Path):
+        if issubclass(type(folder), Path):
             self._folder = folder
-        elif type(folder) == str:
+        elif isinstance(folder, str):
             self._folder = Path(folder)
         else:
             raise TypeError("{type(folder)} is not supported")
@@ -58,22 +65,31 @@ class Getty_TGN_Location:
             raise ValueError(
                 f"Getty_TGN_Location: {self._filename.name} is not an json or jsonld file"
             )
-
-        self.query_name = self._filename.name.split("-")[0]
-        self.result_name = self._filename.name.split("-")[1]
-        self.result_type = self._filename.name.split("-")[2]
-        self.result_id = self._filename.name.split("-")[3].split(".")[0]
+        splitted = self._filename.split("-")
+        self.query_name = splitted[0]
+        self.result_name = splitted[1]
+        self.result_type = splitted[2]
+        self.result_id = splitted[3].split(".")[0]
         self.latitude, self.longitude = self.coordinates
 
     def get_data(self) -> str:
         """Get the data from the file as a string"""
-        return Path(self._folder, self._filename).read_text(encoding="utf-8")
+        file_path = self._folder / self._filename
+        try:
+            return file_path.read_text(encoding="utf-8")
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File not found: {file_path}")
+        except IOError as e:
+            raise IOError(f"Error reading file: {file_path}\n{str(e)}")
 
     @property
     def coordinates(self) -> tuple:
         file = self._folder / self._filename
-        with open(file, "r") as f:
-            data = json.load(f)
+        try:
+            with open(file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except Exception as e:
+            print(f"Coordinates function:\nError in opening the json\n\t{e}")
         for obj in data["identified_by"]:
             if obj.get("type") == "crm:E47_Spatial_Coordinates":
                 aslist = json.loads(obj.get("value"))
@@ -145,13 +161,15 @@ class Getty_TGN_Request_Json:
 
     def save_jsons(self, folder):
         for finding in self.results:
-            filename = Path(
+            data = None
+            rawfilename = (
                 self.queryname
                 + "-"
                 + self.querynation
                 + "-".join(finding[0].get_data_list())
                 + ".jsonld"
             )
+            filename = Path(sanitize_filename(rawfilename))
             try:
                 #  the request has to have these specific headers
                 baseurl = finding[0].link
@@ -163,10 +181,12 @@ class Getty_TGN_Request_Json:
                 print(f"Error in retrieving the json file:\n\t{baseurl}\n\t{e}")
             #  create a json file in the folder given, load the json and save the prettified version json.dumps()
             Path(folder).mkdir(exist_ok=True)
-            json_data = json.loads(data)
-            full_path = folder / filename
-            with full_path.open(mode="w", encoding="utf-8") as file:
-                file.write(json.dumps(json_data, indent=4))
+            if data:
+                json_data = json.loads(data)
+                full_path = folder / filename
+                if full_path.exists():
+                    with full_path.open(mode="w", encoding="utf-8") as file:
+                        file.write(json.dumps(json_data, indent=4))
 
 
 def SOAP_Request(

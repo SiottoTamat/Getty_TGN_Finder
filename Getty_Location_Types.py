@@ -16,6 +16,16 @@ def get_Getty_TGN_types() -> list | None:
         return None
 
 
+def check_Getty_loctype(
+    string: str, list_locs: list = None, json="location_types_pickled.json"
+) -> bool:
+    if not list_locs:
+        list_locs = unpickle_json(json)
+    if string in list_locs:
+        return True
+    return False
+
+
 def pickle_json(the_list: list, filename: Path | str = "Getty_Location_Types.json"):
     """Saves the content of the list as a json file"""
     if not isinstance(filename, Path) and type(filename) != str:
@@ -27,6 +37,9 @@ def pickle_json(the_list: list, filename: Path | str = "Getty_Location_Types.jso
             filename = Path(filename)
         except Exception as e:
             print(f"Failed to create the file {filename}:\n\t{e}")
+            
+    if not filename.exists():
+        raise FileNotFoundError(filename)
 
     if type(the_list) != list:
         raise ValueError("pickle_json function error:\n\talist must be of type list")
@@ -40,13 +53,22 @@ def unpickle_json(filename: str | Path) -> list:
     """Unpickles the json with all the location type definitions as a list"""
     if not isinstance(filename, Path) and type(filename) != str:
         raise ValueError(
-            "pickle_json function error:\n\tFilename must be a string or pathlib.Path"
+            "unpickle_json function error:\n\tFilename must be a string or pathlib.Path"
         )
+    
     if type(filename) == str:
         try:
             filename = Path(filename)
         except Exception as e:
             print(f"Failed to create the file {filename}:\n\t{e}")
+    
+    if not filename.exists():
+        raise FileNotFoundError(filename)
+    
     with filename.open() as file:
         json_data = json.load(file)
+        
+    if type(json_data) != list:
+        raise ValueError("unpickle_json function error:\n\tthe content of the json file must represent a list")
+        
     return json_data
