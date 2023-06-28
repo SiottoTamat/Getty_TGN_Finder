@@ -128,44 +128,44 @@ class Getty_TGN_Request_Json:
         query_nationid: str = "",
         save_to_folder: str = "",
     ) -> None:
-        self.queryname = str(query_name)
-        self.querytype = str(query_placetypeid)
-        self.querynation = str(query_nationid)
+        self.query_name = str(query_name)
+        self.query_placetypeid = str(query_placetypeid)
+        self.query_nationid = str(query_nationid)
         self.results: list(Getty_TGN_Element) = SOAP_Request(
-            self.queryname, self.querytype, self.querynation
+            self.query_name, self.query_placetypeid, self.query_nationid
         )
 
         if save_to_folder:
-            self.save_jsons(save_to_folder)
+            self.save_jsons(Path(save_to_folder))
 
     def __str__(self):
-        returned = f"Query: {self.queryname}\nType: {self.querytype}\nNation: {self.querynation}\nResults:\n"
+        returned = f"Query: {self.query_name}\nType: {self.query_placetypeid}\nNation: {self.query_nationid}\nResults:\n"
         returned += self.pretty_results + "\n\n"
         return returned
 
     @property
     def pretty_results(self):
         """pretty print of self.results"""
-        max = 0
+        maximum = 0
         if not self.results:
             return "No results."
         returned = ""
         for i, finding in enumerate(self.results):
             returned += f"Result {i}:\n"
             for block in finding:
-                if block._max_length > max:
-                    max = block._max_length + 3
+                if block._max_length > maximum:
+                    maximum = block._max_length + 3
             for block in finding:
-                returned += f"{block.name : <{max}}{block.type : <{max}}{block.id : <{max}}\n-------\n"
+                returned += f"{block.name : <{maximum}}{block.type : <{maximum}}{block.id : <{maximum}}\n-------\n"
         return returned
 
     def save_jsons(self, folder):
         for finding in self.results:
             data = None
             rawfilename = (
-                self.queryname
+                self.query_name
                 + "-"
-                + self.querynation
+                + self.query_nationid
                 + "-".join(finding[0].get_data_list())
                 + ".jsonld"
             )
@@ -175,12 +175,18 @@ class Getty_TGN_Request_Json:
                 baseurl = finding[0].link
                 headers = {"Accept": "application/ld+json; charset=utf-8"}
                 req = urllib.request.Request(baseurl, headers=headers)
-                data = urllib.request.urlopen(req).read().decode("utf-8")
+                with urllib.request.urlopen(req) as response:
+                    data = response.read().decode("utf-8")
 
+            except urllib.error.HTTPError as e:
+                print(f"HTTP Error {e.code}: {e.reason}")
+            except urllib.error.URLError as e:
+                print(f"URL Error: {e.reason}")
             except Exception as e:
                 print(f"Error in retrieving the json file:\n\t{baseurl}\n\t{e}")
+
             #  create a json file in the folder given, load the json and save the prettified version json.dumps()
-            Path(folder).mkdir(exist_ok=True)
+            folder.mkdir(exist_ok=True)
             if data:
                 json_data = json.loads(data)
                 full_path = folder / filename
